@@ -57,5 +57,5 @@ phases:
 
       # [DO NOT EDIT]--------------------------------------------
       # (Refresh service)
-      - aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --task-definition ${TASKDEF_NAME} --force-new-deployment
+      - aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME}-service --task-definition ${TASKDEF_NAME} --force-new-deployment
       # ---------------------------------------------------------
