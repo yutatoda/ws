@@ -1,0 +1,7 @@
+FROM public.ecr.aws/docker/library/nginx:1.25.3-alpine3.18
+
+## -- Build variables -- 
+ARG ENVIRONMENT="local"
+
+## -- Build --
+COPY ./docker/${ENVIRONMENT}/nginx/config/nginx.conf /etc/nginx/nginx.conf

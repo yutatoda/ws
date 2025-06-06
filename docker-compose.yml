@@ -1,0 +1,56 @@
+# docker-composeのバージョン
+version: "3" 
+
+# コンテナ定義
+services:
+  # nginxサーバー
+  nginx:
+    # コンテナ名
+    container_name: "ws-nginx"
+    # コンテナの作成に使用するDockerfileのパス
+    build:
+      # dockerfile: "./docker/local/nginx/Dockerfile"
+      dockerfile: "./docker/local/nginx/Dockerfile_local"
+    # ホスト側のポート:コンテナ側のポートを指定
+    ports:
+      - "80:80"
+    volumes:
+      - "./src:/var/www/html"
+    # command: echo 'Not running nginx'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  # PHPサーバー
+  php:
+    # コンテナ名
+    container_name: "ws-php"
+    # コンテナの作成に使用するDockerfileのパス
+    build:
+      # dockerfile: "./docker/local/php-fpm/Dockerfile"
+      dockerfile: "./docker/local/php-fpm/Dockerfile_local"
+    # srcディレクトリ内のファイルをコンテナ内の~/var/www/html配下にマウント
+    volumes:
+      - "./src:/var/www/html"
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  # DBサーバー
+  db:
+    # コンテナ名
+    container_name: "ws-db"
+    # コンテナの作成に使用するDockerfileのパス
+    build:
+      dockerfile: "./docker/local/db/Dockerfile"
+    # ホスト側のポート:コンテナ側のポートを指定
+    ports:
+      - "3306:3306"
+    # 環境変数の指定
+    environment:
+      - "MYSQL_ROOT_PASSWORD=password"
+      - "MYSQL_DATABASE=database"
+      - "MYSQL_USER=laravel"
+      - "MYSQL_PASSWORD=password"
+    volumes:
+      - "./db/data:/var/lib/mysql"
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'

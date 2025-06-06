@@ -1,0 +1,26 @@
+FROM public.ecr.aws/docker/library/php:8.3.1-fpm
+
+## -- Build variables -- 
+ARG ENVIRONMENT="local"
+ENV PHP_UID=1000
+ENV PHP_GID=1000
+ENV DOCKER_USER=${USER}
+
+## -- Build --
+# COPY php.ini /usr/local/etc/php/conf.d
+# COPY php-fpm.conf /usr/local/etc/php-fpm.d
+COPY ./docker/${ENVIRONMENT}/php-fpm/config/php.ini /usr/local/etc/php/php.ini
+
+# Install Package
+RUN apt-get update \
+    && apt-get -y install git zip unzip vim gcc make autoconf
+
+RUN docker-php-ext-install pdo_mysql
+
+RUN pecl install xdebug \
+&& docker-php-ext-enable xdebug
+
+# Install composer
+RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
+
+WORKDIR /var/www/html
